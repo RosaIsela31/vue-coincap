@@ -3,10 +3,14 @@ import App from "./App.vue";
 import "@/assets/css/tailwind.css";
 
 import router from "@/router";
+import { dollarFilter, percetFilter } from "@/filters";
+
+Vue.filter("dollar", dollarFilter);
+Vue.filter("percent", percetFilter);
 
 Vue.config.productionTip = false;
 
 new Vue({
   router: router,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");
