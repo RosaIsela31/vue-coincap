@@ -29,7 +29,15 @@
           />
         </td>
         <td>#{{ a.rank }}</td>
-        <td>{{ a.name }}</td>
+        <td>
+          <router-link
+            class="hover: underline text-green-600"
+            :to="{ name: 'coin-detail', params: { id: a.id } }"
+          >
+            {{ a.name }}
+          </router-link>
+          <small class="ml-1 text-gray-500">{{ a.symbol }}</small>
+        </td>
         <td>{{ a.priceUsd | dollar }}</td>
         <td>{{ a.marketCapUsd | dollar }}</td>
         <td
@@ -54,9 +62,9 @@ export default {
   props: {
     assets: {
       type: Array,
-      default: () => []
-    }
-  }
+      default: () => [],
+    },
+  },
 };
 </script>
 
