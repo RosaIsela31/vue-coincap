@@ -74,7 +74,7 @@ export default {
 
   data() {
     return {
-      filters: ''
+      filter: ''
     }
   },
 
@@ -87,8 +87,8 @@ export default {
 
   computed: {
     filteredAssets() {
-      if(!this.filters) {return this.assets}
-      return this.assets.filter(a => a.name.symbol.toLowerCase().includes(this.filter.toLowerCase()) || a.name.name.toLowerCase().includes(this.filter.toLowerCase())
+      if(!this.filter) {return this.assets}
+      return this.assets.filter(a => a.symbol.toLowerCase().includes(this.filter.toLowerCase()) || a.name.toLowerCase().includes(this.filter.toLowerCase())
       )
     }
   },
