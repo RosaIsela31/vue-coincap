@@ -10,12 +10,20 @@
         <th>Precio</th>
         <th>Cap. de Mercado</th>
         <th>Variación 24hs</th>
-        <td class="hidden sm:block"></td>
+        <td class="hidden sm:block">
+          <input
+            class="bg-gray-100 focus:outline-none border-b border-gray-400 py-2 px-4 block w-full appearance-none leading-normal"
+            id="filter"
+            placeholder="Buscar..."
+            type="text"
+            v-model="filter"
+          />
+        </td>
       </tr>
     </thead>
     <tbody>
       <tr
-        v-for="a in assets"
+        v-for="a in filteredAssets"
         v-bind:key="a.id"
         class="border-b border-gray-200 hover:bg-gray-100 hover:bg-orange-100"
       >
@@ -33,9 +41,7 @@
           <router-link
             class="hover: underline text-green-600"
             :to="{ name: 'coin-detail', params: { id: a.id } }"
-          >
-            {{ a.name }}
-          </router-link>
+          >{{ a.name }}</router-link>
           <small class="ml-1 text-gray-500">{{ a.symbol }}</small>
         </td>
         <td>{{ a.priceUsd | dollar }}</td>
@@ -46,9 +52,7 @@
               ? 'text-red-600'
               : 'text-green-600'
           "
-        >
-          {{ a.changePercent24Hr | percent }}
-        </td>
+        >{{ a.changePercent24Hr | percent }}</td>
         <td class="hidden sm:block">
           <px-button @custom-click="goToCoin(a.id)">
             <span>Detalle</span>
@@ -65,21 +69,35 @@ export default {
   name: "PxAssetsTable",
 
   components: {
-    PxButton,
+    PxButton
+  },
+
+  data() {
+    return {
+      filters: ''
+    }
   },
 
   props: {
     assets: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
+  },
+
+  computed: {
+    filteredAssets() {
+      if(!this.filters) {return this.assets}
+      return this.assets.filter(a => a.name.symbol.toLowerCase().includes(this.filter.toLowerCase()) || a.name.name.toLowerCase().includes(this.filter.toLowerCase())
+      )
+    }
   },
 
   methods: {
     goToCoin(id) {
       this.$router.push({ name: "coin-detail", params: { id } });
-    },
-  },
+    }
+  }
 };
 </script>
 

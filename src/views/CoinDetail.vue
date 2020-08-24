@@ -73,12 +73,12 @@
         :colors="['orange']"
         :min="min"
         :max="max"
-        :data="history.map((h) => [h.date, parseFloat(h.priceUsd).toFixed(2)])"
+        :data="history.map(h => [h.date, parseFloat(h.priceUsd).toFixed(2)])"
       />
 
       <h3 class="text-xl my-10">Mejores ofertas de cambio</h3>
       <table>
-        <tr v-for="m in markets" :key="`${m.exchangeId}-${m.priceUsd }`" class="border-b">
+        <tr v-for="m in markets" :key="`${m.exchangeId}-${m.priceUsd}`" class="border-b">
           <td>
             <b>{{ m.exchangeId }}</b>
           </td>
@@ -93,7 +93,11 @@
               <slot>Obtener Link</slot>
             </px-button>
 
-            <a v-else class="hover:underline text-green-600" target="_blanck">{{ m.url }}</a>
+            <a v-else class="hover:underline text-green-600" target="_blanck">
+              {{
+              m.url
+              }}
+            </a>
           </td>
         </tr>
       </table>
@@ -102,7 +106,7 @@
 </template>
 
 <script>
-import PxButton from "@/components/PxButton"
+import PxButton from "@/components/PxButton";
 import api from "@/api";
 export default {
   name: "CoinDetail",
@@ -116,20 +120,20 @@ export default {
       asset: {},
       history: [],
       isLoading: false,
-      markets: [],
+      markets: []
     };
   },
 
   computed: {
     min() {
-      return Math.min(...this.history.map((h) => parseFloat(h.priceUsd)));
+      return Math.min(...this.history.map(h => parseFloat(h.priceUsd)));
     },
     max() {
-      return Math.max(...this.history.map((h) => parseFloat(h.priceUsd)));
+      return Math.max(...this.history.map(h => parseFloat(h.priceUsd)));
     },
     avg() {
-      return Math.abs(...this.history.map((h) => parseFloat(h.priceUsd)));
-    },
+      return Math.abs(...this.history.map(h => parseFloat(h.priceUsd)));
+    }
   },
 
   created() {
@@ -137,13 +141,25 @@ export default {
   },
 
   methods: {
+    getWebsite(exchange) {
+      this.$set(exchange, 'isLoading', true)
+
+      return api.getExchange(exchange.exchangeId).then(res => {
+        this.$set(exchange, "url", res.exchangeUrl);
+      })
+      .finally(() => {
+          this.$set(exchange, 'isLoading', false)
+        })
+    },
+
     getCoin() {
       const id = this.$route.params.id;
       this.isLoading = true;
+      
       Promise.all([
         api.getAsset(id),
         api.getAssetHistory(id),
-        api.getMarkets(id),
+        api.getMarkets(id)
       ])
         .then(([asset, history, markets]) => {
           (this.asset = asset),
@@ -151,7 +167,7 @@ export default {
             (this.markets = markets);
         })
         .finally(() => (this.isLoading = false));
-    },
-  },
+    }
+  }
 };
 </script>
